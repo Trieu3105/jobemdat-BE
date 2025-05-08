@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production nodemon server.js",
+    "start": "server.js",
     "dev": "set NODE_ENV=development && nodemon server.js",
     "build": "tsc"
   },
