@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 corsOptions = {
-  origin: process.env.CLIENT_URL || "http://localhost:3000",// địa chỉ frontend cho phép gửi yêu cầu
+  origin: process.env.CLIENT_URL, // Use CLIENT_URL from environment variables
   methods: ['GET', 'POST'], 
   credentials: true, // Allow credentials (cookies) to be sent
 };
