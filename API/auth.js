@@ -51,6 +51,7 @@ router.post("/login", async (req, res) => {
     }
   } catch (err) {
     console.error("Error fetching user:", err);
+    console.log("Received body:", req.body);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
