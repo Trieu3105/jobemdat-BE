@@ -5,13 +5,15 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const router = express.Router();
-const SECRET_KEY = process.env.JWT_SECRET ;
+const SECRET_KEY = process.env.JWT_SECRET;
 
 router.use(cookieParser());
-router.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000", // Allow requests from the frontend
-  credentials: true, // Allow cookies to be sent
-}));
+router.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000", // Allow requests from the frontend
+    credentials: true, // Allow cookies to be sent
+  })
+);
 
 // API Login (Promise-based)
 router.post("/login", async (req, res) => {
@@ -20,9 +22,10 @@ router.post("/login", async (req, res) => {
   console.log(password);
 
   try {
-    const [results] = await pool.query("SELECT * FROM users WHERE username = ?", [
-      username,
-    ]);
+    const [results] = await pool.query(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
 
     if (results.length === 0) {
       return res.status(401).json({ message: "Invalid username or password" });
@@ -36,7 +39,12 @@ router.post("/login", async (req, res) => {
         { expiresIn: "24h" }
       );
 
-      res.cookie("access_token", token, { httpOnly: true, maxAge: 3600000 });
+      res.cookie("access_token", token, {
+        httpOnly: false, // ⚠️ hoặc bỏ luôn để frontend JS có thể truy cập
+        secure: true, // chỉ gửi cookie qua HTTPS
+        sameSite: "none", // hoặc "None" nếu frontend/backend khác domain
+        maxAge: 3600000,
+      });
       return res.status(200).json({ message: "Login successful", token });
     } else {
       return res.status(401).json({ message: "Invalid username or password" });
@@ -56,18 +64,20 @@ router.get("/profile", async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    const [userResults] = await pool.query("SELECT * FROM users WHERE username = ?", [
-      decoded.username,
-    ]);
+    const [userResults] = await pool.query(
+      "SELECT * FROM users WHERE username = ?",
+      [decoded.username]
+    );
 
     if (userResults.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const user = userResults[0];
-    const [playerResults] = await pool.query("SELECT * FROM players WHERE user_id = ?", [
-      user.id,
-    ]);
+    const [playerResults] = await pool.query(
+      "SELECT * FROM players WHERE user_id = ?",
+      [user.id]
+    );
 
     const profileData = {
       ...user,
@@ -90,9 +100,10 @@ router.post("/register", async (req, res) => {
 
   try {
     // Check if the username already exists
-    const [existingUser] = await pool.query("SELECT * FROM users WHERE username = ?", [
-      username,
-    ]);
+    const [existingUser] = await pool.query(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
 
     if (existingUser.length > 0) {
       return res.status(409).json({ message: "Username already exists" });
@@ -121,11 +132,15 @@ router.post("/forgot-password", async (req, res) => {
 
   try {
     // 1. Tìm user theo email
-    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
     const user = rows[0];
 
     if (!user) {
-      return res.status(404).json({ message: "Email không tồn tại trong hệ thống." });
+      return res
+        .status(404)
+        .json({ message: "Email không tồn tại trong hệ thống." });
     }
 
     // 2. Tạo token reset dạng JWT
@@ -161,14 +176,16 @@ router.post("/reset-password", async (req, res) => {
 
     // 2. Cập nhật mật khẩu trực tiếp (không hash)
     await pool.query("UPDATE users SET password = ? WHERE id = ?", [
-      newPassword,  // Sử dụng mật khẩu không hash
+      newPassword, // Sử dụng mật khẩu không hash
       userId,
     ]);
 
     return res.status(200).json({ message: "Cập nhật mật khẩu thành công." });
   } catch (err) {
     console.error("Lỗi xác minh token:", err);
-    return res.status(400).json({ message: "Token không hợp lệ hoặc đã hết hạn." });
+    return res
+      .status(400)
+      .json({ message: "Token không hợp lệ hoặc đã hết hạn." });
   }
 });
 
