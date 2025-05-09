@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8080;
 
 router.use(
   cors({
-    origin: "https://jobemdat-fe.vercel.app", // Đảm bảo chỉ cho phép URL frontend của bạn
+    origin: `${process.env.CLIENT_URL}`, // Đảm bảo chỉ cho phép URL frontend của bạn
     credentials: true, // Cho phép cookie được gửi cùng yêu cầu
     methods: ["GET", "POST", "OPTIONS"], // Cho phép các phương thức cụ thể
     allowedHeaders: ["Content-Type", "Authorization"], // Cho phép các header cụ thể
