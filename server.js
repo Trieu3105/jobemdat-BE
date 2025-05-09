@@ -13,9 +13,10 @@ const contentRouter = require("./API/posts");
 const PORT = process.env.PORT || 8080;
 
 corsOptions = {
-  origin: process.env.CLIENT_URL, // Use CLIENT_URL from environment variables
-  methods: ['GET', 'POST'], 
-  credentials: true, // Allow credentials (cookies) to be sent
+origin: process.env.CLIENT_URL, // Allow requests from the frontend
+    credentials: true, // Allow cookies to be sent
+    methods: ["GET", "POST", "OPTIONS"], // Allow specific methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
 };
 
 app.use(cors(corsOptions)); // Apply CORS options globally
