@@ -3,7 +3,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-import { authenticateToken } from "./middleware/auth"; // Đường dẫn đúng tới file middleware
+const authenticateToken = require("../middleware/auth.js")
+
 
 
 const router = express.Router();
