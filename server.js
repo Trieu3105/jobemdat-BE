@@ -1,5 +1,6 @@
 // index.js
-const express = require('express');
+const express = require("express");
+const app = express();
 const cors = require('cors');
 require('dotenv').config({
     path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
@@ -9,7 +10,6 @@ const giftcodeRouter = require("./API/giftcode");
 const paymentRouter = require("./API/payment");
 const contentRouter = require("./API/posts");
 
-const app = express();
 const PORT = process.env.PORT || 8080;
 
 corsOptions = {

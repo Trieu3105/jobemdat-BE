@@ -17,6 +17,7 @@ router.use(
 
 // API Login (Promise-based)
 router.post("/login", async (req, res) => {
+  console.log("Login request body:", req.body);
   const { username, password } = req.body;
   console.log(username);
   console.log(password);
