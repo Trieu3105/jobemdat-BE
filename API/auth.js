@@ -59,7 +59,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/api/auth", authenticateToken, (req, res) => {
+router.get("/auth", authenticateToken, (req, res) => {
   res.status(200).json({ authenticated: true });
 });
 
