@@ -3,6 +3,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+import { authenticateToken } from "./middleware/auth"; // Đường dẫn đúng tới file middleware
+
 
 const router = express.Router();
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -55,6 +57,10 @@ router.post("/login", async (req, res) => {
     console.log("Received body:", req.body);
     return res.status(500).json({ error: "Internal server error" });
   }
+});
+
+router.get("/api/auth", authenticateToken, (req, res) => {
+  res.status(200).json({ authenticated: true });
 });
 
 // API Profile (Get user data via token)
